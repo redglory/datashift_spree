@@ -155,10 +155,12 @@ module DataShift
           
           path, alt_text = image.split(Delimiters::name_value_delim)
 
-          logger.debug("Processing IMAGE from PATH #{path.inspect} #{alt_text.inspect}")
+          logger.debug("Processing IMAGE from PATH:#{path.inspect} with alt_text:#{alt_text.inspect}")
           
           path = File.join(config[:image_path_prefix], path) if(config[:image_path_prefix])
 
+          # ensure no white spaces
+          path.strip
           # create_attachment(klass, attachment_path, record = nil, attach_to_record_field = nil, options = {})
           attachment = create_attachment(Spree::Image, path, nil, nil, :alt => alt_text)
         end 
@@ -166,7 +168,7 @@ module DataShift
         begin
           owner.images << attachment
                     
-          logger.debug("Product assigned Image from : #{path.inspect}")
+          logger.debug("Product assigned Image from:#{path.inspect}")
         rescue => e
           puts "ERROR - Failed to assign attachment to #{owner.class} #{owner.id}"
           logger.error("Failed to assign attachment to #{owner.class} #{owner.id}")

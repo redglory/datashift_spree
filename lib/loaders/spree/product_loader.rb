@@ -96,8 +96,9 @@ module DataShift
         
         # This loads images to Product Variants
         elsif(current_method_detail.operator?('variant_images') && current_value)
-
-          add_variant_images(current_value)
+          
+          # Products without variants won't be processed
+          add_variant_images(current_value) unless current_value.strip.empty?
 
         elsif(current_method_detail.operator?('variant_price') && current_value)
 
@@ -117,7 +118,8 @@ module DataShift
             end
 
           else
-            super
+            # Products without variants won't be processed
+            super unless current_value.strip.empty?
           end
 
         elsif(current_method_detail.operator?('variant_cost_price') && current_value)
@@ -138,7 +140,8 @@ module DataShift
             end
 
           else
-            super
+            # Products without variants won't be processed
+            super unless current_value.strip.empty?
           end          
           
         elsif(current_method_detail.operator?('variant_sku') && current_value)
@@ -159,7 +162,8 @@ module DataShift
             end
 
           else
-            super
+            # Products without variants won't be processed
+            super unless current_value.strip.empty?
           end
           
         #elsif(current_value && (current_method_detail.operator?('count_on_hand') || current_method_detail.operator?('on_hand')) )
@@ -602,7 +606,10 @@ module DataShift
                 logger.debug("Processing IMAGE from PATH #{path.inspect} #{alt_text.inspect}")
                 
                 path = File.join(config[:image_path_prefix], path) if(config[:image_path_prefix])
-      
+                
+                # ensure no white spaces
+                path.strip
+
                 attachment = create_attachment(Spree::Image, path, nil, nil, :alt => alt_text)
 
               end 
@@ -715,7 +722,10 @@ module DataShift
                 logger.debug("Processing IMAGE from PATH #{path.inspect} #{alt_text.inspect}")
                 
                 path = File.join(config[:image_path_prefix], path) if(config[:image_path_prefix])
-      
+
+                # ensure no white spaces
+                path.strip      
+                
                 # create_attachment(klass, attachment_path, record = nil, attach_to_record_field = nil, options = {})
                 attachment = create_attachment(Spree::Image, path, nil, nil, :alt => alt_text)
 
